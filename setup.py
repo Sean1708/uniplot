@@ -11,5 +11,4 @@ setup(
     url=uniplot.__homepage__,
     download_url=uniplot.__download__,
     install_requires=['hippy', 'matplotlib'],
-    packages=['refile'],
 )
