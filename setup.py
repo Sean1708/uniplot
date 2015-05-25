@@ -17,5 +17,11 @@ setup(
     url=mdata['__homepage__'],
     download_url=mdata['__download__'],
     license=mdata['__license__'],
+
     install_requires=['hippy', 'matplotlib'],
+    extras_require={
+        'YAML': ['PyYAML'],
+        'TOML': ['PyTOML'],
+    },
+    entry_points={'console_scripts': ['uniplot = uniplot:main'],},
 )
