@@ -17,6 +17,7 @@ setup(
     url=mdata['__homepage__'],
     download_url=mdata['__download__'],
     license=mdata['__license__'],
+    packages=['uniplot'],
 
     install_requires=['hippy', 'matplotlib'],
     extras_require={
