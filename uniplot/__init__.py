@@ -14,6 +14,11 @@ def main():
         help='display version info and exit.',
     )
     parser.add_argument(
+        '--no-hip',
+        action='store_true',
+        help="don't write intermediate .hip file.",
+    )
+    parser.add_argument(
         'input',
         help='file from which the data is read.',
     )
