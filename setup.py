@@ -19,10 +19,10 @@ setup(
     license=mdata['__license__'],
     packages=['uniplot'],
 
-    install_requires=['hippy', 'matplotlib'],
+    install_requires=['HipPy', 'matplotlib'],
     extras_require={
         'YAML': ['PyYAML'],
         'TOML': ['PyTOML'],
     },
-    entry_points={'console_scripts': ['uniplot = uniplot.main:main']},
+    entry_points={'console_scripts': ['uniplot = uniplot.cli:main']},
 )
