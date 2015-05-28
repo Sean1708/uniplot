@@ -24,5 +24,5 @@ setup(
         'YAML': ['PyYAML'],
         'TOML': ['PyTOML'],
     },
-    entry_points={'console_scripts': ['uniplot = uniplot:main'],},
+    entry_points={'console_scripts': ['uniplot = uniplot.main:main']},
 )
