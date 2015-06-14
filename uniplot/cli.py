@@ -7,7 +7,7 @@ from .__about__ import __version__
 
 def arg_setup():
     """Setup the argument parser."""
-    arg_parser = argparse.Argumentarg_Parser(
+    arg_parser = argparse.ArgumentParser(
         description='Plot graphs from human-readable file formats.',
     )
 
