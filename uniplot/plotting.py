@@ -108,7 +108,8 @@ def plot_axis(canvas, data):
     if 'xerr' in args or 'yerr' in args:
         canvas.errorbar(fmt='o', **args)
     else:
-        canvas.plot(**args)
+        # plot doesn't support plot(x=..., y=...)
+        canvas.plot(args.pop('x'), args.pop('y'), **args)
 
 
 def get_axis_values(data, axis, args):
