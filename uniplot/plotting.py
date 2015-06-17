@@ -46,6 +46,16 @@ def subplots(fig, nrows, ncols, nsubs, share):
     return axes
 
 
+def plotwidth(figure, nrows, ncols):
+    """Calculate the plot width of the figure, assuming square subplots.
+
+    Does this by calculating the height per plot and multiplying by number of
+    columns.
+    """
+    height = figure.get_figheight()/nrows
+    return height * ncols
+
+
 def plot(data, filename):
     """Plot the data."""
     fig = plt.figure()
@@ -56,7 +66,7 @@ def plot(data, filename):
             fig.suptitle(data['title'])
     else:  # top-level object is the graph
         graphs = data
-        # how does a single graph share it's own axis
+        # a single graph can't share it's own axis
         share = False
 
     if not isinstance(graphs, list):
@@ -72,6 +82,7 @@ def plot(data, filename):
     for (axis, graph) in zip(axes, graphs):
         plot_subplot(axis, graph)
 
+    fig.set_figwidth(plotwidth(fig, nrows, ncols))
     fig.savefig(filename)
 
 
