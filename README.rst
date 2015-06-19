@@ -2,17 +2,17 @@
 uniplot
 =======
 
-uniplot is simple utility which aims to unify plotting. The issue with modern
+``uniplot`` is simple utility which aims to unify plotting. The issue with modern
 plotting programs such as EasyPlot and Origin (apart from the fact you have to
 pay for them D:) is that they all use a different format to represent their
 plots, meaning you have to have all the programs installed on your computer to
 use these plots (an even bigger issue since these plots never seem to be
-exportable to images).
+exportable to images). ``uniplot`` aims to seperate the plot data from the data
+representation so that any file format can be used (as long as a parser exists)
+and you can even write your graphs by hand if you wish.
 
-uniplot is written in Python meaning it's cross-platform and easy to install.
-uniplot uses a simple, human-readable data serialisation format called `Hip`_
-and was designed so that users can modify (or even write from scratch) the file
-themselves.
+uniplot is written in Python meaning it's cross-platform, easy to install and
+will always be free (both as in speech and as in beer).
 
 .. _`Hip`: https://github.com/mario-deluna/Hip
 
@@ -28,35 +28,66 @@ as cloning the `repo`_ and using ``pip``::
 
 .. _`repo`: https://github.com/Sean1708/uniplot
 
----------------
-The File Format
----------------
+-----
+Usage
+-----
 
-uniplot uses `Hip`_ data serialisation (interfaced using the `HipPy`_) to store
-the data for the plot. The file stores a list of objects with the following
-fields::
+To get an up-to-date overview of all flags use the ``--help`` option.
 
-    -
-    title: <string>
-    labels:
-        x: <string>
-        y: <string>
-    data: <string>
-    data:
-        -
-        x:
-            percent: <bool>
-            values: <list: <int | float>>
-            errors: <list: <int | float> | int | float>
-        y:
-            percent: <bool>
-            values: <list: <int | float>>
-            errors: <list: <int | float> | int | float>
-        --
-        ...
-        -
-    --
-    ...
-    -
+.. code:: console
 
-.. _`HipPy`: https://github.com/Sean1708/HipPy
+    $ uniplot --help
+
+The simplest usage of ``uniplot`` is to supply a single file name, this will use
+that file to plot the graph (automatically guessing the file format) and save it
+as a PDF using the original file name as a base. For example
+
+.. code:: console
+
+    $ uniplot graphs/AwesomeData.hip
+
+will create a PDF in ``graphs`` called ``AwesomeData.pdf``. By supplying a
+second file name you can specify the file name, location and type.
+
+.. code:: console
+
+    $ uniplot graphs/AwesomeData.yml plots/AwesomePlot.png
+
+This will create a PNG in ``plots`` called ``AwesomePlot.png``.
+
+``uniplot`` uses ``matplotlib`` as a backend so to get a list of the filetypes
+(with their extensions) that you can save as run the following in a Python
+interpreter:
+
+.. code:: pycon
+
+    >>> from matplotlib import pyplot
+    >>> fig = pyplot.figure()
+    >>> print(fig.canvas.get_supported_filetypes())
+    {'bmp': 'Windows bitmap',
+    'eps': 'Encapsulated Postscript',
+    'gif': 'Graphics Interchange Format',
+    'jpeg': 'JPEG',
+    'jpg': 'JPEG',
+    'pdf': 'Portable Document Format',
+    'pgf': 'PGF code for LaTeX',
+    'png': 'Portable Network Graphics',
+    'ps': 'Postscript',
+    'raw': 'Raw RGBA bitmap',
+    'rgba': 'Raw RGBA bitmap',
+    'svg': 'Scalable Vector Graphics',
+    'svgz': 'Scalable Vector Graphics',
+    'tif': 'Tagged Image Format File',
+    'tiff': 'Tagged Image Format File'}
+
+------------------
+The Data Structure
+------------------
+
+I'll write it soon I promise!
+
+-----------------------
+Writing Your Own Parser
+-----------------------
+
+Ditto.
