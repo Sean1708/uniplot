@@ -1,25 +1,36 @@
 """Handles parsing the data file describing the plot."""
+import os
+import os.path
+import sys
+import hippy
+import warnings
+import importlib
 
 
 def parse_file(name, ext):
-    """Parse the plot info from the given file."""
+    """Parse plot info from given file using correct parser."""
+    # quickly load Hip files
     if ext == '.hip':
-        import hippy
-        parse = hippy.decode
-    elif ext == '.yml':
-        import yaml
-        parse = yaml.load
-    elif ext == '.toml':
-        import pytoml
-        parse = pytoml.loads
-    else:
-        # TODO: some way to have arbitrary parsers
-        #       I still like the whole function to test if correct filetype and
-        #       function to parse, but how to load?
-        raise ImportError('No module to parse {} files.'.format(ext[1:]))
+        return hippy.read(name)
 
-    with open(name, 'r') as f:
-        plot_data = parse(f.read())
+    # otherwise load parsers until the correct one is found
+    parser_dir = os.path.join(os.path.expanduser('~'), '.uniplot', 'parser')
+    parser_files = os.listdir(parser_dir)
+    sys.path.append(parser_dir)
+
+    for pf in parser_files:
+        parser_mod = importlib.import_module(
+            os.path.splitext(os.path.basename(pf))[0]
+        )
+
+        if parser_mod.isparser(name):
+            parse = parser_mod.parse
+            break
+    else:
+        m = 'No module to parse {} files, defaulting to HipPy.'.format(ext[1:])
+        warnings.warn(m)
+        parse = hippy.decode
+
+    plot_data = parse(name)
 
     return plot_data
-

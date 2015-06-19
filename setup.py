@@ -20,9 +20,9 @@ setup(
     packages=['uniplot'],
 
     install_requires=['HipPy', 'matplotlib'],
-    extras_require={
-        'YAML': ['PyYAML'],
-        'TOML': ['PyTOML'],
-    },
+    data_files=[(
+        os.path.join(os.path.expanduser('~'), '.uniplot', 'parser'),
+        ['parsers/uplt_yaml.py', 'parsers/uplt_toml.py'],
+    )],
     entry_points={'console_scripts': ['uniplot = uniplot.cli:main']},
 )

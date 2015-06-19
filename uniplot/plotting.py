@@ -52,7 +52,7 @@ def plotwidth(figure, nrows, ncols):
     Does this by calculating the height per plot and multiplying by number of
     columns.
     """
-    height = figure.get_figheight()/nrows
+    height = figure.get_figheight() / nrows
     return height * ncols
 
 
