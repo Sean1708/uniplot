@@ -18,11 +18,6 @@ def arg_setup():
         help='display version info and exit.',
     )
     arg_parser.add_argument(
-        '--no-hip',
-        action='store_true',
-        help="don't write intermediate .hip file.",
-    )
-    arg_parser.add_argument(
         'input',
         help='file from which the data is read.',
     )
@@ -49,7 +44,3 @@ def main():
         output_file = name + '.pdf'
 
     plotting.plot(plot_data, output_file)
-
-    if not args['no_hip'] and ext != '.hip':
-        import hippy
-        hippy.write(name+'.hip', plot_data)
