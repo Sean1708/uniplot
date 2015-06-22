@@ -2,7 +2,9 @@
 import math
 import numpy
 import os.path
-import matplotlib.pyplot as plt
+import warnings
+import matplotlib
+from matplotlib import pyplot
 
 
 def round_half_up(n):
@@ -18,6 +20,41 @@ def round_half_up(n):
         return fl
     else:
         return fl+1
+
+
+def get_axis_values(data, axis, args):
+    """Extract the correct values from an axis."""
+    # TODO: this is reallyreallyreally ugly
+    if isinstance(data[axis], list):  # hard-coded data
+        args[axis] = numpy.array(data[axis])
+    elif isinstance(data[axis], str):  # data in 'filename:column:skiprows'
+        args[axis] = load_array_from_file(data[axis])
+    else:  # data given with `values` and `errors`
+        if isinstance(data[axis]['values'], str):
+            args[axis] = load_array_from_file(data[axis]['values'])
+        else:
+            args[axis] = numpy.array(data[axis]['values'])
+
+        if 'errors' in data[axis]:
+            err_axis = axis + 'err'
+            errors = data[axis]['errors']
+
+            if isinstance(errors, list):  # an error for each value
+                args[err_axis] = numpy.array(errors)
+            elif isinstance(errors, str):  # errors in file
+                args[err_axis] = load_array_from_file(errors)
+            else:  # error given as percentage
+                args[err_axis] = args[axis] * errors
+
+
+def load_array_from_file(file_info_str):
+    """Load an array from a file."""
+    file_info = file_info_str.split(':')
+    delim = ',' if os.path.splitext(file_info[0])[1] == '.csv' else None
+    return numpy.loadtxt(
+        file_info[0], delimiter=delim, usecols=[int(file_info[1])],
+        skiprows=0 if len(file_info) < 3 else int(file_info[2])
+    )
 
 
 def subplots(fig, nrows, ncols, nsubs, share):
@@ -56,9 +93,46 @@ def plotwidth(figure, nrows, ncols):
     return height * ncols
 
 
-def plot(data, filename):
+def plot_axis(canvas, data):
+    """Correctly plot a set of x-y values."""
+    args = {}
+
+    get_axis_values(data, 'x', args)
+    get_axis_values(data, 'y', args)
+
+    if 'legend' in data:
+        args['label'] = data['legend']
+
+    if 'xerr' in args or 'yerr' in args:
+        canvas.errorbar(fmt='o', **args)
+    else:
+        # plot doesn't support plot(x=..., y=...)
+        canvas.plot(args.pop('x'), args.pop('y'), **args)
+
+
+def plot_subplot(canvas, data):
+    """Plot each subplot."""
+    title = data.get('title')
+    if title is not None:
+        canvas.set_title(title)
+
+    labels = data.get('labels', {'x': 'x', 'y': 'y'})
+    canvas.set_xlabel(labels['x'])
+    canvas.set_ylabel(labels['y'])
+
+    has_legend = False
+    for axis in data['axes']:
+        if 'legend' in axis:
+            has_legend = True
+        plot_axis(canvas, axis)
+
+    if has_legend:
+        canvas.legend()
+
+
+def plot_graph(data, filename):
     """Plot the data."""
-    fig = plt.figure()
+    fig = pyplot.figure()
     if 'graphs' in data:
         graphs = data['graphs']
         share = data.get('share', True)
@@ -86,73 +160,19 @@ def plot(data, filename):
     fig.savefig(filename)
 
 
-def plot_subplot(canvas, data):
-    """Plot each subplot."""
-    title = data.get('title')
-    if title is not None:
-        canvas.set_title(title)
+def plot(data, filename, stylesheet):
+    """Set the correct style then plot the data."""
+    style_dir = os.path.join(os.path.expanduser('~'), '.uniplot', 'style')
+    user_styles = os.listdir(style_dir)
 
-    labels = data.get('labels', {'x': 'x', 'y': 'y'})
-    canvas.set_xlabel(labels['x'])
-    canvas.set_ylabel(labels['y'])
-
-    has_legend = False
-    for axis in data['axes']:
-        if 'legend' in axis:
-            has_legend = True
-        plot_axis(canvas, axis)
-
-    if has_legend:
-        canvas.legend()
-
-
-def plot_axis(canvas, data):
-    """Correctly plot a set of x-y values."""
-    args = {}
-
-    get_axis_values(data, 'x', args)
-    get_axis_values(data, 'y', args)
-
-    if 'legend' in data:
-        args['label'] = data['legend']
-
-    if 'xerr' in args or 'yerr' in args:
-        canvas.errorbar(fmt='o', **args)
+    if stylesheet in user_styles:
+        with matplotlib.rc_context(fname=os.path.join(style_dir, stylesheet)):
+            plot_graph(data, filename)
+    elif stylesheet in pyplot.style.available:
+        with pyplot.style.context(stylesheet):
+            plot_graph(data, filename)
     else:
-        # plot doesn't support plot(x=..., y=...)
-        canvas.plot(args.pop('x'), args.pop('y'), **args)
-
-
-def get_axis_values(data, axis, args):
-    """Extract the correct values from an axis."""
-    # TODO: this is reallyreallyreally ugly
-    if isinstance(data[axis], list):  # hard-coded data
-        args[axis] = numpy.array(data[axis])
-    elif isinstance(data[axis], str):  # data in 'filename:column:skiprows'
-        args[axis] = load_array_from_file(data[axis])
-    else:  # data given with `values` and `errors`
-        if isinstance(data[axis]['values'], str):
-            args[axis] = load_array_from_file(data[axis]['values'])
-        else:
-            args[axis] = numpy.array(data[axis]['values'])
-
-        if 'errors' in data[axis]:
-            err_axis = axis + 'err'
-            errors = data[axis]['errors']
-
-            if isinstance(errors, list):  # an error for each value
-                args[err_axis] = numpy.array(errors)
-            elif isinstance(errors, str):  # errors in file
-                args[err_axis] = load_array_from_file(errors)
-            else:  # error given as percentage
-                args[err_axis] = args[axis] * errors
-
-
-def load_array_from_file(file_info_str):
-    """Load an array from a file."""
-    file_info = file_info_str.split(':')
-    delim = ',' if os.path.splitext(file_info[0])[1] == '.csv' else None
-    return numpy.loadtxt(
-        file_info[0], delimiter=delim, usecols=[int(file_info[1])],
-        skiprows=0 if len(file_info) < 3 else int(file_info[2])
-    )
+        if stylesheet is not None:
+            m = 'style {} not found, using default.'.format(stylesheet)
+            warnings.warn(m)
+        plot_graph(data, filename)

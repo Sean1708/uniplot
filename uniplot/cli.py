@@ -1,4 +1,5 @@
 """Handles the main running of the program from the command-line."""
+import os
 import os.path
 import argparse
 from . import parsing, plotting
@@ -16,6 +17,10 @@ def arg_setup():
         action='version',
         version='{} {}'.format(arg_parser.prog, __version__),
         help='display version info and exit.',
+    )
+    arg_parser.add_argument(
+        '-s', '--style',
+        help='specify a stylesheet to use for the plot.',
     )
     arg_parser.add_argument(
         'input',
@@ -43,4 +48,9 @@ def main():
     if output_file is None:
         output_file = name + '.pdf'
 
-    plotting.plot(plot_data, output_file)
+    if isinstance(plot_data, list):
+        stylesheet = args['style']
+    else:
+        stylesheet = plot_data.get('style', args['style'])
+
+    plotting.plot(plot_data, output_file, stylesheet)
