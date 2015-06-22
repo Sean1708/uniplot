@@ -127,7 +127,7 @@ def plot_subplot(canvas, data):
         plot_axis(canvas, axis)
 
     if has_legend:
-        canvas.legend()
+        canvas.legend(loc='best')
 
 
 def plot_graph(data, filename):
