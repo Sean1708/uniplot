@@ -10,6 +10,7 @@ def arg_setup():
     """Setup the argument parser."""
     arg_parser = argparse.ArgumentParser(
         description='Plot graphs from human-readable file formats.',
+        epilog='For more detailed help see `pydoc3 uniplot`.',
     )
 
     arg_parser.add_argument(
