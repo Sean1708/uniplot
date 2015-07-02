@@ -1,3 +1,8 @@
+# uniplot output
+*.pdf
+*.png
+*.jpg
+
 #### joe made this: http://goel.io/joe
 
 #####=== Python ===#####
