@@ -19,9 +19,7 @@ Installation
 ------------
 
 uniplot is currently not available on PyPI but installation is still as simple
-as cloning the `repo`_ and using ``pip``
-
-.. code:: console
+as cloning the `repo`_ and using ``pip``::
 
     $ git clone https://github.com/Sean1708/uniplot.git
     $ pip install .
@@ -32,24 +30,18 @@ as cloning the `repo`_ and using ``pip``
 Usage
 -----
 
-To get an up-to-date overview of all flags use the ``--help`` option.
-
-.. code:: console
+To get an up-to-date overview of all flags use the ``--help`` option::
 
     $ uniplot --help
 
 The simplest usage of uniplot is to supply a single file name, this will use
 that file to plot the graph (automatically guessing the file format) and save it
-as a PDF using the original file name as a base. For example
-
-.. code:: console
+as a PDF using the original file name as a base. For example::
 
     $ uniplot graphs/AwesomeData.hip
 
 will create a PDF in ``graphs`` called ``AwesomeData.pdf``. By supplying a
-second file name you can specify the file name, location and type.
-
-.. code:: console
+second file name you can specify the file name, location and type::
 
     $ uniplot graphs/AwesomeData.yml plots/AwesomePlot.png
 
@@ -89,15 +81,13 @@ graphs to your liking. uniplot takes advantage of this functionality and also
 allows you to use your own stylesheets. To do so you must put your stylesheet in
 ``$HOME/.uniplot/style`` then use it by supplying the filename to the ``-s``
 flag. For example if you wrote a stylesheet called ``uber_mega_style`` you would
-write it in ``$HOME/.uniplot/style/uber_mega_style`` and call it like:
-
-.. code:: console
+write it in ``$HOME/.uniplot/style/uber_mega_style`` and call it like::
 
     $ uniplot -s uber_mega_style my_data.hip
 
-alternatively you can give your top-level graph a ``style`` attribute:::
+alternatively you can give your top-level graph a ``style`` attribute::
 
-    style: a_style
+    style: "a_style"
     graphs: ...
 
 matplotlib comes with some predefined stylesheets which can be used, to see
