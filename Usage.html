@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Usage &mdash; uniplot 0.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="uniplot 0.0.0 documentation" href="index.html" />
+    <link rel="next" title="The Data Structure" href="structure.html" />
+    <link rel="prev" title="uniplot documentation!" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>You can get an up-to-date overview of flags and usage with the <code class="docutils literal"><span class="pre">--help</span></code>
+option:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> uniplot --help
+</pre></div>
+</div>
+<p>For a more in-depth help you can browse the main uniplot docstring:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pydoc uniplot
+</pre></div>
+</div>
+<p>The simplest usage of uniplot is to supply a single file name, this will use
+that file to plot the graph (automatically guessing the file format) and save it
+as a PDF using the orignal file name and location. For example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> uniplot graphs/AwesomeGraph.hip
+</pre></div>
+</div>
+<p>will create a PDF in <code class="file docutils literal"><span class="pre">graphs</span></code> called <code class="file docutils literal"><span class="pre">AwesomeData.pdf</span></code>. By supplying
+a second file name you can specify the file type, location and name:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> uniplot graphs/AwesomeGraph.yml plots/AwesomePlot.png
+</pre></div>
+</div>
+<p>This will create a PNG in <code class="file docutils literal"><span class="pre">plots</span></code> called <code class="file docutils literal"><span class="pre">AwesomePlot.png</span></code>.</p>
+<p>uniplot uses matplotlib as a backend so to get a list of the file types (with
+their extensions) that you can save as run the following in a Python
+interpreter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">get_supported_filetypes</span><span class="p">())</span>
+<span class="go">{&#39;bmp&#39;: &#39;Windows bitmap&#39;,</span>
+<span class="go">&#39;eps&#39;: &#39;Encapsulated Postscript&#39;,</span>
+<span class="go">&#39;gif&#39;: &#39;Graphics Interchange Format&#39;,</span>
+<span class="go">&#39;jpeg&#39;: &#39;JPEG&#39;,</span>
+<span class="go">&#39;jpg&#39;: &#39;JPEG&#39;,</span>
+<span class="go">&#39;pdf&#39;: &#39;Portable Document Format&#39;,</span>
+<span class="go">&#39;pgf&#39;: &#39;PGF code for LaTeX&#39;,</span>
+<span class="go">&#39;png&#39;: &#39;Portable Network Graphics&#39;,</span>
+<span class="go">&#39;ps&#39;: &#39;Postscript&#39;,</span>
+<span class="go">&#39;raw&#39;: &#39;Raw RGBA bitmap&#39;,</span>
+<span class="go">&#39;rgba&#39;: &#39;Raw RGBA bitmap&#39;,</span>
+<span class="go">&#39;svg&#39;: &#39;Scalable Vector Graphics&#39;,</span>
+<span class="go">&#39;svgz&#39;: &#39;Scalable Vector Graphics&#39;,</span>
+<span class="go">&#39;tif&#39;: &#39;Tagged Image Format File&#39;,</span>
+<span class="go">&#39;tiff&#39;: &#39;Tagged Image Format File&#39;}</span>
+</pre></div>
+</div>
+<div class="section" id="using-stylesheets">
+<h2>Using Stylesheets<a class="headerlink" href="#using-stylesheets" title="Permalink to this headline">¶</a></h2>
+<p>matplotlib allows you to define <a class="reference external" href="http://matplotlib.org/users/style_sheets.html#defining-your-own-style">stylesheets</a> so that you can easily adapt your
+graphs to your liking. uniplot takes advantage of this functionality and also
+allows you to use your own stylesheets. To do so you must put your stylesheet in
+<code class="file docutils literal"><span class="pre">$HOME/.uniplot/style</span></code> then use it by supplying the filename to the <code class="docutils literal"><span class="pre">-s</span></code>
+flag. For example if you wrote a stylesheet called <code class="docutils literal"><span class="pre">uber_mega_style</span></code> you would
+write it in <code class="file docutils literal"><span class="pre">$HOME/.uniplot/style/uber_mega_style</span></code> and call it like so:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> uniplot -s uber_mega_style my_graph.hip
+</pre></div>
+</div>
+<p>alternatively you can give your top-level graph a <code class="docutils literal"><span class="pre">style</span></code> attribute (see
+<a class="reference internal" href="structure.html#graph"><span>Graph</span></a>):</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">style</span><span class="p-Indicator">:</span> <span class="s">&quot;uber_mega_style&quot;</span>
+<span class="l-Scalar-Plain">graphs</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>matplotlib comes with some predefined stylesheets which can be used, to see
+which ones are installed on your system use the following python snippet:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">pyplot</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">available</span><span class="p">)</span>
+<span class="go">[&#39;dark_background&#39;, &#39;ggplot&#39;, &#39;grayscale&#39;, &#39;bmh&#39;, &#39;fivethirtyeight&#39;]</span>
+</pre></div>
+</div>
+<p>uniplot also comes with some predefined styles, shamelessly stolen from
+<a class="reference external" href="https://github.com/ctokheim/matplotlibrc">ctokheim</a>, which are placed in <code class="file docutils literal"><span class="pre">$HOME/.uniplot/style</span></code>. If you&#8217;re
+interested in writing your own I suggest you start here since the matplotlib
+documentation is quite lacking.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Usage</a><ul>
+<li><a class="reference internal" href="#using-stylesheets">Using Stylesheets</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">uniplot documentation!</a></li>
+      <li>Next: <a href="structure.html" title="next chapter">The Data Structure</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Usage.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Sean Marshallsay.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/Usage.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
