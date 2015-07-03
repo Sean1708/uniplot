@@ -37,7 +37,8 @@ interest of inclusion I will also be rewriting the examples in JSON.
 
    Many strings can be given LaTeX style maths which will be typeset according
    to the `instructions <http://matplotlib.org/users/mathtext.html>`_ given by
-   matplotlib. This largely applies to ``title``\ s and ``labels``.
+   matplotlib. This largely applies to ``title``\ s, ``labels`` and
+   ``legend``\ s.
 
 
 .. _graph:
