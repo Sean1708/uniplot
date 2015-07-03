@@ -11,8 +11,9 @@ def parse_file(filename, parsername=''):
         except ImportError:
             # this parser couldn't be imported
             warnings.warn("Parser {} could not be loaded.".format(ep.name))
-        except pkg_resources.UnknownExtra:
-            # the extras for this parser aren't installed (not a fatal issue)
+            continue
+        except pkg_resources.DistributionNotFound:
+            # this parser wasn't installed (not a fatal error)
             continue
 
         if ep.name == parsername or parser.isfiletype(filename):
