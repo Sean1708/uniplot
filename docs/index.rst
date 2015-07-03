@@ -36,3 +36,11 @@ you use ``pip`` like so::
 
 If you would rather not use ``pip`` then you can replace ``pip install .`` with
 ``python setup.py install``.
+
+------------
+Contributing
+------------
+
+Found a bug? Got a suggestion? Made some changes that you want to incorporate?
+Head over to the `repo <https://github.com/Sean1708/uniplot>`_ and open an issue
+or submit a pull request!
