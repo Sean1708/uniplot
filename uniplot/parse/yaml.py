@@ -1,8 +1,9 @@
+"""Parses YAML files."""
 import yaml
 import os.path
 
 
-def isparser(filename):
+def isfiletype(filename):
     return os.path.splitext(filename)[1] == '.yml'
 
 

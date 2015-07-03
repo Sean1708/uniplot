@@ -2,7 +2,7 @@
 import os
 import os.path
 import argparse
-from . import parsing, plotting
+from . import parse, plotting
 from .__about__ import __version__
 
 
@@ -24,6 +24,11 @@ def arg_setup():
         help='specify a stylesheet to use for the plot.',
     )
     arg_parser.add_argument(
+        '-p', '--parser',
+        default='',
+        help='specify the parser which should be used for the input file.',
+    )
+    arg_parser.add_argument(
         'input',
         help='file from which the data is read.',
     )
@@ -43,7 +48,7 @@ def main():
     input_file = args['input']
     name, ext = os.path.splitext(input_file)
 
-    plot_data = parsing.parse_file(input_file, ext)
+    plot_data = parse.parse_file(input_file, args['parser'])
 
     output_file = args['output']
     if output_file is None:

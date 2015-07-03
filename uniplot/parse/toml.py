@@ -1,8 +1,9 @@
+"""Parses TOML files."""
 import pytoml
 import os.path
 
 
-def isparser(filename):
+def isfiletype(filename):
     return os.path.splitext(filename)[1] == '.toml'
 
 
@@ -11,3 +12,4 @@ def parse(filename):
         plot_data = pytoml.load(f)
 
     return plot_data
+

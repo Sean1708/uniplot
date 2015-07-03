@@ -20,21 +20,26 @@ setup(
     packages=['uniplot'],
 
     install_requires=['HipPy', 'matplotlib'],
-    data_files=[
-        (
-            os.path.join(os.path.expanduser('~'), '.uniplot', 'parser'),
-            ['parsers/uplt_yaml.py', 'parsers/uplt_toml.py'],
-        ),
-        (
-            os.path.join(os.path.expanduser('~'), '.uniplot', 'style'),
-            [
-                'styles/darkgrid',
-                'styles/ggplot2',
-                'styles/gist',
-                'styles/nogrid',
-                'styles/whitegrid',
-            ],
-        )
-    ],
-    entry_points={'console_scripts': ['uniplot = uniplot.cli:main']},
+    data_files=[(
+        os.path.join(os.path.expanduser('~'), '.uniplot', 'style'),
+        [
+            'styles/darkgrid',
+            'styles/ggplot2',
+            'styles/gist',
+            'styles/nogrid',
+            'styles/whitegrid',
+        ],
+    )],
+    extras_require={
+        'YAML': ['PyYAML'],
+        'TOML': ['PyTOML'],
+    },
+    entry_points={
+        'console_scripts': ['uniplot = uniplot.cli:main'],
+        'uniplot.parsers': [
+            'hip = uniplot.parse:hip',
+            'yaml = uniplot.parse:yaml [YAML]',
+            'toml = uniplot.parse:toml [TOML]',
+        ],
+    },
 )
