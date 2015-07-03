@@ -17,7 +17,7 @@ setup(
     url=mdata['__homepage__'],
     download_url=mdata['__download__'],
     license=mdata['__license__'],
-    packages=['uniplot'],
+    packages=['uniplot', 'uniplot.parse'],
 
     install_requires=['HipPy', 'matplotlib'],
     data_files=[(
@@ -37,9 +37,9 @@ setup(
     entry_points={
         'console_scripts': ['uniplot = uniplot.cli:main'],
         'uniplot.parsers': [
-            'hip = uniplot.parse:hip',
-            'yaml = uniplot.parse:yaml [YAML]',
-            'toml = uniplot.parse:toml [TOML]',
+            'hip = uniplot.parse.hip',
+            'yaml = uniplot.parse.yaml [YAML]',
+            'toml = uniplot.parse.toml [TOML]',
         ],
     },
 )
