@@ -13,7 +13,7 @@ def parse_file(filename, parsername=''):
             warnings.warn("Parser {} could not be loaded.".format(ep.name))
             continue
         except pkg_resources.DistributionNotFound:
-            # this parser wasn't installed (not a fatal error)
+            # this parser wasn't installed
             continue
 
         if ep.name == parsername or parser.isfiletype(filename):
