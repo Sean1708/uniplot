@@ -7,6 +7,9 @@ import matplotlib
 from matplotlib import pyplot
 
 
+_LIST = (list, numpy.ndarray)
+
+
 def round_half_up(n):
     """Round n, settling ties by rounding up.
 
@@ -25,7 +28,7 @@ def round_half_up(n):
 def get_axis_values(data, axis, args):
     """Extract the correct values from an axis."""
     # TODO: this is reallyreallyreally ugly
-    if isinstance(data[axis], list):  # hard-coded data
+    if isinstance(data[axis], _LIST):  # hard-coded data
         args[axis] = numpy.array(data[axis])
     elif isinstance(data[axis], str):  # data in 'filename:column:skiprows'
         args[axis] = load_array_from_file(data[axis])
@@ -39,7 +42,7 @@ def get_axis_values(data, axis, args):
             err_axis = axis + 'err'
             errors = data[axis]['errors']
 
-            if isinstance(errors, list):  # an error for each value
+            if isinstance(errors, _LIST):  # an error for each value
                 args[err_axis] = numpy.array(errors)
             elif isinstance(errors, str):  # errors in file
                 args[err_axis] = load_array_from_file(errors)
@@ -143,7 +146,7 @@ def plot_graph(data, filename):
         # a single graph can't share it's own axis
         share = False
 
-    if not isinstance(graphs, list):
+    if not isinstance(graphs, _LIST):
         graphs = [graphs]
     nsubs = len(graphs)
 
