@@ -1,0 +1,18 @@
+[Plot]
+Title=Calibrated Gamma Spectrum of 133Ba
+Axis=1
+Descriptors=1
+Energy=1
+Log=0
+XFull=0
+XChan=0
+YAuto=0
+ROIBox=1
+Mono=0
+GridX=1
+GridY=1
+LowX=0.000000
+HighX=400.000000
+HighY=22000
+Printer=ptlprint2 (HP LaserJet P3010 Series)
+Colors=0, 9, 12, 0, 2

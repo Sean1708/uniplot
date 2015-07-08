@@ -40,6 +40,7 @@ setup(
             'hip = uniplot.parse.hip:HipParser',
             'yaml = uniplot.parse.yaml:YamlParser [YAML]',
             'toml = uniplot.parse.toml:TomlParser [TOML]',
+            'multispect = uniplot.parse.multispect:MultiSpectParser',
         ],
     },
 )
