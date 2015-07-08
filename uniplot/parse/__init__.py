@@ -1,11 +1,17 @@
 """Handles parsing the data file describing the plot."""
 import pkg_resources
 import warnings
+import os.path
+import errno
+import os
 
 
 def parse_file(filename, parsername=''):
     """Parse plot info from given file using correct parser."""
-    if parsername == '':
+    if not os.path.exists(filename):
+        num = errno.ENOENT
+        raise FileNotFoundError(num, os.strerror(num), filename)
+    elif parsername == '':
         return find_parser(filename)
     else:
         return load_parser(filename, parsername)
