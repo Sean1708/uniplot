@@ -5,18 +5,66 @@ import warnings
 
 def parse_file(filename, parsername=''):
     """Parse plot info from given file using correct parser."""
-    for ep in pkg_resources.iter_entry_points(group="uniplot.parsers"):
+    if parsername == '':
+        return find_parser(filename)
+    else:
+        return load_parser(filename, parsername)
+
+
+def find_parser(filename):
+    """Find the correct parser by iterating entry_points."""
+    for ep in pkg_resources.iter_entry_points(group='uniplot.parsers'):
         try:
-            parser = ep.load()
+            parser = ep.load()(filename)
         except ImportError:
             # this parser couldn't be imported
-            warnings.warn("Parser {} could not be loaded.".format(ep.name))
+            warnings.warn('parser {} could not be loaded'.format(ep.name))
             continue
         except pkg_resources.DistributionNotFound:
             # this parser wasn't installed
             continue
 
-        if ep.name == parsername or parser.isfiletype(filename):
-            return parser.parse(filename)
+        if parser.isfiletype():
+            return parser.parse()
     else:
-        raise ImportError("No parser could be found for {}".format(filename))
+        raise ImportError(
+            'no parser could be found for {}, please check spelling'.format(
+                filename
+            )
+        )
+
+
+def load_parser(filename, parsername):
+    """Load only the specified entrypoint."""
+    eps = list(pkg_resources.iter_entry_points(
+        group='uniplot.parsers', name=parsername
+    ))
+    if len(eps) > 1:
+        warnings.warn('multiple parsers found with name {}'.format(parsername))
+
+    errors = []
+    for ep in eps:
+        try:
+            parser = ep.load()(filename)
+            return parser.parse()
+        except Exception as e:
+            errors.append(e)
+    else:
+        import traceback
+        import sys
+
+        for err in errors:
+            print('-'*60, file=sys.stderr)
+            traceback.print_exception(err.__class__, err, err.__traceback__)
+
+        print(
+            '-'*60,
+            'no parser named {} could successfully parse {}'.format(
+                parsername, filename
+            ),
+            'tracebacks have been printed above for extra information',
+            sep='\n',
+            file=sys.stderr,
+        )
+
+        sys.exit(1)

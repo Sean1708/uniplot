@@ -37,9 +37,9 @@ setup(
     entry_points={
         'console_scripts': ['uniplot = uniplot.cli:main'],
         'uniplot.parsers': [
-            'hip = uniplot.parse.hip',
-            'yaml = uniplot.parse.yaml [YAML]',
-            'toml = uniplot.parse.toml [TOML]',
+            'hip = uniplot.parse.hip:HipParser',
+            'yaml = uniplot.parse.yaml:YamlParser [YAML]',
+            'toml = uniplot.parse.toml:TomlParser [TOML]',
         ],
     },
 )
