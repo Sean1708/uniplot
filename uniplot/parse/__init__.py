@@ -24,7 +24,7 @@ def find_parser(filename):
             parser = ep.load()(filename)
         except ImportError:
             # this parser couldn't be imported
-            warnings.warn('parser {} could not be loaded'.format(ep.name))
+            warnings.warn("parser '{}' could not be loaded".format(ep.name))
             continue
         except pkg_resources.DistributionNotFound:
             # this parser wasn't installed
@@ -33,7 +33,7 @@ def find_parser(filename):
         if parser.isfiletype():
             return parser.parse()
     else:
-        raise ImportError('no parser could be found for {}'.format(filename))
+        raise ImportError("no parser could be found for '{}'".format(filename))
 
 
 def load_parser(filename, parsername):
@@ -42,9 +42,9 @@ def load_parser(filename, parsername):
         group='uniplot.parsers', name=parsername
     ))
     if len(eps) > 1:
-        warnings.warn('multiple parsers called {}'.format(parsername))
+        warnings.warn("multiple parsers called '{}'".format(parsername))
     elif len(eps) < 1:
-        raise ImportError('parser {} could not be found'.format(parsername))
+        raise ImportError("parser '{}' could not be found".format(parsername))
 
     errors = []
     for ep in eps:
@@ -63,7 +63,7 @@ def load_parser(filename, parsername):
 
         print(
             '-'*60,
-            'no parser named {} could successfully parse {}'.format(
+            "no parser named '{}' could successfully parse '{}'".format(
                 parsername, filename
             ),
             'tracebacks have been printed above for extra information',

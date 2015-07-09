@@ -176,6 +176,6 @@ def plot(data, filename, stylesheet):
             plot_graph(data, filename)
     else:
         if stylesheet is not None:
-            m = 'style {} not found, using default.'.format(stylesheet)
+            m = "style '{}' not found, using default.".format(stylesheet)
             warnings.warn(m)
         plot_graph(data, filename)
