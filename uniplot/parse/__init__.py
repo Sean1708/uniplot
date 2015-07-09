@@ -33,11 +33,7 @@ def find_parser(filename):
         if parser.isfiletype():
             return parser.parse()
     else:
-        raise ImportError(
-            'no parser could be found for {}, please check spelling'.format(
-                filename
-            )
-        )
+        raise ImportError('no parser could be found for {}'.format(filename))
 
 
 def load_parser(filename, parsername):
@@ -46,7 +42,9 @@ def load_parser(filename, parsername):
         group='uniplot.parsers', name=parsername
     ))
     if len(eps) > 1:
-        warnings.warn('multiple parsers found with name {}'.format(parsername))
+        warnings.warn('multiple parsers called {}'.format(parsername))
+    elif len(eps) < 1:
+        raise ImportError('parser {} could not be found'.format(parsername))
 
     errors = []
     for ep in eps:
