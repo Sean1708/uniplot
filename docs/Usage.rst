@@ -51,6 +51,65 @@ interpreter:
    'tif': 'Tagged Image Format File',
    'tiff': 'Tagged Image Format File'}
 
+----------------
+Forcing a Parser
+----------------
+
+uniplot will do it's best to guess which parser to use for your file type but
+occasionally it will get this wrong. This might happen if two different file
+types use a similar file format, or if a file type is usually identified by the
+file extension but this is missing. If uniplot can not guess which parser to
+use or guesses incorrectly then you can force it to use a specific parser with
+the ``-p parser_name`` option.
+
+Let's say for example that you have a YAML file called :file:`my_graph.plt`.
+YAML files are usually identified by the ``.yml`` extension so uniplot will not
+be able to find a parser for this file. You can force it to use the YAML parser
+like so::
+
+    uniplot -p yaml my_graph.plt
+
+If the parser is not installed you will receive an error message which looks
+something like this::
+
+    ...
+    ImportError: parser 'yaml' could not be found
+
+If multiple parsers by that name are found, each one will be tried in turn until
+one of them works. If none of them work then the backtraces from them will be
+print to ``stderr`` and the program will quit.
+
+The name of the parser can be found in the :file:`setup.py` file of the package
+you installed to obtain the parser. For example if you look at the
+:file:`setup.py` file in the `repo`_ for this package you will find the
+following lines:
+
+.. code-block:: python
+
+    entry_points={
+        'console_scripts': ['uniplot = uniplot.cli:main'],
+        'uniplot.parsers': [
+            'hip = uniplot.parse.hip:HipParser',
+            'yaml = uniplot.parse.yaml:YamlParser [YAML]',
+            'toml = uniplot.parse.toml:TomlParser [TOML]',
+            'multispect = uniplot.parse.multispect:MultiSpectParser',
+        ],
+    },
+
+You can find the name of the parsers in the ``uniplot.parsers`` list, to the
+left of the ``=``. So this package makes the ``hip``, ``yaml``, ``toml`` and
+``multispect`` parsers available. If I wrote a different package which provided
+a parser called ``origin`` it might have the following lines in it's
+:file:`setup.py`:
+
+.. code-block:: python
+
+    entry_points={
+        'uniplot.parsers': [
+            'origin = path.to.parser:OriginParser',
+        ],
+    },
+
 -----------------
 Using Stylesheets
 -----------------
@@ -86,5 +145,6 @@ uniplot also comes with some predefined styles, shamelessly stolen from
 interested in writing your own I suggest you start here since the matplotlib
 documentation is quite lacking.
 
+.. _`repo`: http://github.com/Sean1708/uniplot
 .. _`stylesheets`: http://matplotlib.org/users/style_sheets.html#defining-your-own-style
 .. _`ctokheim`: https://github.com/ctokheim/matplotlibrc
