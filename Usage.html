@@ -85,6 +85,58 @@ interpreter:</p>
 <span class="go">&#39;tiff&#39;: &#39;Tagged Image Format File&#39;}</span>
 </pre></div>
 </div>
+<div class="section" id="forcing-a-parser">
+<h2>Forcing a Parser<a class="headerlink" href="#forcing-a-parser" title="Permalink to this headline">¶</a></h2>
+<p>uniplot will do it&#8217;s best to guess which parser to use for your file type but
+occasionally it will get this wrong. This might happen if two different file
+types use a similar file format, or if a file type is usually identified by the
+file extension but this is missing. If uniplot can not guess which parser to
+use or guesses incorrectly then you can force it to use a specific parser with
+the <code class="docutils literal"><span class="pre">-p</span> <span class="pre">parser_name</span></code> option.</p>
+<p>Let&#8217;s say for example that you have a YAML file called <code class="file docutils literal"><span class="pre">my_graph.plt</span></code>.
+YAML files are usually identified by the <code class="docutils literal"><span class="pre">.yml</span></code> extension so uniplot will not
+be able to find a parser for this file. You can force it to use the YAML parser
+like so:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">uniplot -p yaml my_graph.plt</span>
+</pre></div>
+</div>
+<p>If the parser is not installed you will receive an error message which looks
+something like this:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">...</span>
+<span class="go">ImportError: parser &#39;yaml&#39; could not be found</span>
+</pre></div>
+</div>
+<p>If multiple parsers by that name are found, each one will be tried in turn until
+one of them works. If none of them work then the backtraces from them will be
+print to <code class="docutils literal"><span class="pre">stderr</span></code> and the program will quit.</p>
+<p>The name of the parser can be found in the <code class="file docutils literal"><span class="pre">setup.py</span></code> file of the package
+you installed to obtain the parser. For example if you look at the
+<code class="file docutils literal"><span class="pre">setup.py</span></code> file in the <a class="reference external" href="http://github.com/Sean1708/uniplot">repo</a> for this package you will find the
+following lines:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
+    <span class="s">&#39;console_scripts&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;uniplot = uniplot.cli:main&#39;</span><span class="p">],</span>
+    <span class="s">&#39;uniplot.parsers&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s">&#39;hip = uniplot.parse.hip:HipParser&#39;</span><span class="p">,</span>
+        <span class="s">&#39;yaml = uniplot.parse.yaml:YamlParser [YAML]&#39;</span><span class="p">,</span>
+        <span class="s">&#39;toml = uniplot.parse.toml:TomlParser [TOML]&#39;</span><span class="p">,</span>
+        <span class="s">&#39;multispect = uniplot.parse.multispect:MultiSpectParser&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>You can find the name of the parsers in the <code class="docutils literal"><span class="pre">uniplot.parsers</span></code> list, to the
+left of the <code class="docutils literal"><span class="pre">=</span></code>. So this package makes the <code class="docutils literal"><span class="pre">hip</span></code>, <code class="docutils literal"><span class="pre">yaml</span></code>, <code class="docutils literal"><span class="pre">toml</span></code> and
+<code class="docutils literal"><span class="pre">multispect</span></code> parsers available. If I wrote a different package which provided
+a parser called <code class="docutils literal"><span class="pre">origin</span></code> it might have the following lines in it&#8217;s
+<code class="file docutils literal"><span class="pre">setup.py</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
+    <span class="s">&#39;uniplot.parsers&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s">&#39;origin = path.to.parser:OriginParser&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="using-stylesheets">
 <h2>Using Stylesheets<a class="headerlink" href="#using-stylesheets" title="Permalink to this headline">¶</a></h2>
 <p>matplotlib allows you to define <a class="reference external" href="http://matplotlib.org/users/style_sheets.html#defining-your-own-style">stylesheets</a> so that you can easily adapt your
@@ -125,6 +177,7 @@ documentation is quite lacking.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Usage</a><ul>
+<li><a class="reference internal" href="#forcing-a-parser">Forcing a Parser</a></li>
 <li><a class="reference internal" href="#using-stylesheets">Using Stylesheets</a></li>
 </ul>
 </li>
