@@ -19,7 +19,7 @@ setup(
     license=mdata['__license__'],
     packages=['uniplot', 'uniplot.parse'],
 
-    install_requires=['HipPy', 'matplotlib'],
+    install_requires=['HipPy', 'NumPy', 'matplotlib'],
     data_files=[(
         os.path.join(os.path.expanduser('~'), '.uniplot', 'style'),
         [
