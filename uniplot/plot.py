@@ -169,15 +169,11 @@ def plot_subplot(canvas, data):
     canvas.set_xlabel(data.labels['x'])
     canvas.set_ylabel(data.labels['y'])
 
-    has_legend = False
     for axis in data.axes:
-        if 'label' in axis.__dict__ and axis.label != '':
-            has_legend = True
         plot_axis(canvas, axis)
 
-    if has_legend:
-        # TODO: don't bother with 'has_legend',
-        # just temporarily suppress warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
         canvas.legend(loc='best')
 
 
