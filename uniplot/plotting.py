@@ -10,6 +10,59 @@ from matplotlib import pyplot
 _LIST = (list, numpy.ndarray)
 
 
+# TODO: should these have .plot(fig) methods?
+class Graph:
+
+    """The top level data structure, one file is one Graph."""
+
+    def __init__(self, data):
+        """Extract graph attributes."""
+        if 'plots' in data:
+            plots = data['plots']
+            self.title = data.get('title', '')
+            self.share = data.get('share', True)
+            self.style = data.get('style')
+        else:  # top-level object is a (list of) plot(s)
+            plots = data
+            self.title = ''
+            # a single plot can't share with itself
+            self.share = False
+            self.style = None
+
+
+        if isinstance(plots, _LIST):
+            self.plots = [Plot(p) for p in plots]
+        else:
+            self.plots = [Plot(plots)]
+
+
+class Plot:
+
+    """One or more Plots sit within a Graph."""
+
+    def __init__(self, data):
+        """Extract plot attributes."""
+        self.title = data.get('title', '')
+        self.labels = data.get('labels', {'x': 'x', 'y': 'y'})
+        axes = data['axes']
+
+        if isinstance(axes, _LIST):
+            self.axes = [Axes(a) for a in axes]
+        else:
+            self.axes = [Axes(axes)]
+
+
+class Axes:
+
+    """Axes contain the data to be plotted."""
+
+    def __init__(self, data):
+        """Extract axes attributes and data."""
+        self.label = data.get('legend', '')
+        get_axis_values(data, 'x', self.__dict__)
+        get_axis_values(data, 'y', self.__dict__)
+
+
 def round_half_up(n):
     """Round n, settling ties by rounding up.
 
@@ -98,13 +151,9 @@ def plotwidth(figure, nrows, ncols):
 
 def plot_axis(canvas, data):
     """Correctly plot a set of x-y values."""
-    args = {}
-
-    get_axis_values(data, 'x', args)
-    get_axis_values(data, 'y', args)
-
-    if 'legend' in data:
-        args['label'] = data['legend']
+    # TODO: when this is refactored we can call vars() on the Axes object to
+    # get the args.
+    args = vars(data)
 
     if 'xerr' in args or 'yerr' in args:
         canvas.errorbar(fmt='o', **args)
@@ -115,59 +164,52 @@ def plot_axis(canvas, data):
 
 def plot_subplot(canvas, data):
     """Plot each subplot."""
-    title = data.get('title')
-    if title is not None:
-        canvas.set_title(title)
+    canvas.set_title(data.title)
 
-    labels = data.get('labels', {'x': 'x', 'y': 'y'})
-    canvas.set_xlabel(labels['x'])
-    canvas.set_ylabel(labels['y'])
+    canvas.set_xlabel(data.labels['x'])
+    canvas.set_ylabel(data.labels['y'])
 
     has_legend = False
-    for axis in data['axes']:
-        if 'legend' in axis:
+    for axis in data.axes:
+        if 'label' in axis.__dict__ and axis.label != '':
             has_legend = True
         plot_axis(canvas, axis)
 
     if has_legend:
+        # TODO: don't bother with 'has_legend',
+        # just temporarily suppress warnings
         canvas.legend(loc='best')
 
 
 def plot_graph(data, filename):
     """Plot the data."""
     fig = pyplot.figure()
-    if 'graphs' in data:
-        graphs = data['graphs']
-        share = data.get('share', True)
-        if 'title' in data:
-            fig.suptitle(data['title'])
-    else:  # top-level object is the graph
-        graphs = data
-        # a single graph can't share it's own axis
-        share = False
+    fig.suptitle(data.title)
 
-    if not isinstance(graphs, _LIST):
-        graphs = [graphs]
-    nsubs = len(graphs)
-
+    nsubs = len(data.plots)
     # as close an approximation to square as possible without empty rows
     nrows = round_half_up(math.sqrt(nsubs))
     ncols = math.ceil(nsubs/nrows)
 
-    axes = subplots(fig, nrows, ncols, nsubs, share)
+    axes = subplots(fig, nrows, ncols, nsubs, data.share)
 
-    for (axis, graph) in zip(axes, graphs):
-        plot_subplot(axis, graph)
+    for (axis, plot) in zip(axes, data.plots):
+        plot_subplot(axis, plot)
 
-    fig.set_figwidth(plotwidth(fig, nrows, ncols))
+    # TODO: this is ok for mulit plots but horrible for single
+    #fig.set_figwidth(plotwidth(fig, nrows, ncols))
     fig.savefig(filename)
 
 
-def plot(data, filename, stylesheet):
+def plot(data, filename):
     """Set the correct style then plot the data."""
     style_dir = os.path.join(os.path.expanduser('~'), '.uniplot', 'style')
     user_styles = os.listdir(style_dir)
 
+    # TODO: just put data.style everywhere
+    stylesheet = data.style
+
+    # TODO: use plugin for styles (store them as dict then use rc=...)
     if stylesheet in user_styles:
         with matplotlib.rc_context(fname=os.path.join(style_dir, stylesheet)):
             plot_graph(data, filename)

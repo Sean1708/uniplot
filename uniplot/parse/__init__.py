@@ -5,6 +5,8 @@ import os.path
 import errno
 import os
 
+from .. import plotting
+
 
 def parse_file(filename, parsername=''):
     """Parse plot info from given file using correct parser."""
@@ -12,9 +14,11 @@ def parse_file(filename, parsername=''):
         num = errno.ENOENT
         raise FileNotFoundError(num, os.strerror(num), filename)
     elif parsername == '':
-        return find_parser(filename)
+        data = find_parser(filename)
     else:
-        return load_parser(filename, parsername)
+        data = load_parser(filename, parsername)
+
+    return plotting.Graph(data)
 
 
 def find_parser(filename):

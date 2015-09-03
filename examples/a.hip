@@ -1,5 +1,5 @@
 title: 'A plot with many subplots.'
-graphs:
+plots:
     -
     title: 'Some linear plots.'
     labels:

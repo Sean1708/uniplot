@@ -49,14 +49,11 @@ def main():
     name, ext = os.path.splitext(input_file)
 
     plot_data = parse.parse_file(input_file, args['parser'])
+    if plot_data.style is None:
+        plot_data.style = args['style']
 
     output_file = args['output']
     if output_file is None:
         output_file = name + '.pdf'
 
-    if isinstance(plot_data, list):
-        stylesheet = args['style']
-    else:
-        stylesheet = plot_data.get('style', args['style'])
-
-    plotting.plot(plot_data, output_file, stylesheet)
+    plotting.plot(plot_data, output_file)
