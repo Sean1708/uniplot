@@ -2,7 +2,7 @@
 import os
 import os.path
 import argparse
-from . import parse, plotting
+from . import parse, plot
 from .__about__ import __version__
 
 
@@ -56,4 +56,4 @@ def main():
     if output_file is None:
         output_file = name + '.pdf'
 
-    plotting.plot(plot_data, output_file)
+    plot.plot(plot_data, output_file)

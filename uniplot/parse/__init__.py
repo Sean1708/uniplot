@@ -5,7 +5,7 @@ import os.path
 import errno
 import os
 
-from .. import plotting
+from .. import plot
 
 
 def parse_file(filename, parsername=''):
@@ -18,7 +18,7 @@ def parse_file(filename, parsername=''):
     else:
         data = load_parser(filename, parsername)
 
-    return plotting.Graph(data)
+    return plot.Graph(data)
 
 
 def find_parser(filename):
