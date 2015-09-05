@@ -85,9 +85,8 @@ class Axes:
     def __init__(self, data):
         """Extract axes attributes and data."""
         self.label = data.get('legend', '')
-        # TODO: this is horrible, should just be a method.
-        get_axis_values(data, 'x', self.__dict__)
-        get_axis_values(data, 'y', self.__dict__)
+        self.parse_axis_values(data, 'x')
+        self.parse_axis_values(data, 'y')
 
     def plot(self, canvas):
         """Plot data onto the axis."""
@@ -99,6 +98,32 @@ class Axes:
         else:
             # plot doesn't support plot(x=..., y=...)
             canvas.plot(args.pop('x'), args.pop('y'), **args)
+
+    def parse_axis_values(self, data, axis):
+        """Extract values of axis data."""
+        # TODO: this is reallyreallyreally ugly, split it into multiple methods
+        if isinstance(data[axis], _LIST):  # hard-coded data
+            self.__dict__[axis] = numpy.array(data[axis])
+        elif isinstance(data[axis], str):  # data in 'filename:column:skiprows'
+            self.__dict__[axis] = load_array_from_file(data[axis])
+        else:  # data given with `values` and `errors`
+            if isinstance(data[axis]['values'], str):
+                self.__dict__[axis] = load_array_from_file(
+                    data[axis]['values']
+                )
+            else:
+                self.__dict__[axis] = numpy.array(data[axis]['values'])
+
+            if 'errors' in data[axis]:
+                err_axis = axis + 'err'
+                errors = data[axis]['errors']
+
+                if isinstance(errors, _LIST):  # an error for each value
+                    self.__dict__[err_axis] = numpy.array(errors)
+                elif isinstance(errors, str):  # errors in file
+                    self.__dict__[err_axis] = load_array_from_file(errors)
+                else:  # error given as percentage
+                    self.__dict__[err_axis] = self.__dict__[axis] * errors
 
 
 def round_half_up(n):
@@ -116,33 +141,13 @@ def round_half_up(n):
         return fl+1
 
 
-def get_axis_values(data, axis, args):
-    """Extract the correct values from an axis."""
-    # TODO: this is reallyreallyreally ugly
-    if isinstance(data[axis], _LIST):  # hard-coded data
-        args[axis] = numpy.array(data[axis])
-    elif isinstance(data[axis], str):  # data in 'filename:column:skiprows'
-        args[axis] = load_array_from_file(data[axis])
-    else:  # data given with `values` and `errors`
-        if isinstance(data[axis]['values'], str):
-            args[axis] = load_array_from_file(data[axis]['values'])
-        else:
-            args[axis] = numpy.array(data[axis]['values'])
-
-        if 'errors' in data[axis]:
-            err_axis = axis + 'err'
-            errors = data[axis]['errors']
-
-            if isinstance(errors, _LIST):  # an error for each value
-                args[err_axis] = numpy.array(errors)
-            elif isinstance(errors, str):  # errors in file
-                args[err_axis] = load_array_from_file(errors)
-            else:  # error given as percentage
-                args[err_axis] = args[axis] * errors
-
-
 def load_array_from_file(file_info_str):
-    """Load an array from a file."""
+    """Load an array from a file.
+
+    Stored as 'filename:column:skiprows'.
+    """
+    # TODO:
+    #   make filename behave relative to .hip file unless an absolute string
     file_info = file_info_str.split(':')
     delim = ',' if os.path.splitext(file_info[0])[1] == '.csv' else None
     return numpy.loadtxt(
