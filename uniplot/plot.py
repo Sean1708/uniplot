@@ -10,7 +10,6 @@ from matplotlib import pyplot
 _LIST = (list, numpy.ndarray)
 
 
-# TODO: should these have .plot(fig) methods?
 class Graph:
 
     """The top level data structure, one file is one Graph."""
