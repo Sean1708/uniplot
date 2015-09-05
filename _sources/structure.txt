@@ -117,7 +117,7 @@ The following attributes are allowed (``title`` and ``labels`` are optional).
    labels:
        x: <string>
        y: <string>
-   axes: <list: <object>>
+   axes: <list: <object> | object>
 
 .. code-block:: yaml
    :caption: A plot example in Hip
