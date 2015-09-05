@@ -104,10 +104,10 @@ class Axes:
         if isinstance(data[axis], _LIST):  # hard-coded data
             self.__dict__[axis] = numpy.array(data[axis])
         elif isinstance(data[axis], str):  # data in 'filename:column:skiprows'
-            self.__dict__[axis] = load_array_from_file(data[axis])
+            self.__dict__[axis] = self.load_array_from_file(data[axis])
         else:  # data given with `values` and `errors`
             if isinstance(data[axis]['values'], str):
-                self.__dict__[axis] = load_array_from_file(
+                self.__dict__[axis] = self.load_array_from_file(
                     data[axis]['values']
                 )
             else:
@@ -120,9 +120,23 @@ class Axes:
                 if isinstance(errors, _LIST):  # an error for each value
                     self.__dict__[err_axis] = numpy.array(errors)
                 elif isinstance(errors, str):  # errors in file
-                    self.__dict__[err_axis] = load_array_from_file(errors)
+                    self.__dict__[err_axis] = self.load_array_from_file(errors)
                 else:  # error given as percentage
                     self.__dict__[err_axis] = self.__dict__[axis] * errors
+
+    def load_array_from_file(self, file_info_str):
+        """Load an array from a file.
+
+        Stored as 'filename:column:skiprows'.
+        """
+        # TODO:
+        #   make filename behave relative to .hip file unless an absolute string
+        file_info = file_info_str.split(':')
+        delim = ',' if os.path.splitext(file_info[0])[1] == '.csv' else None
+        return numpy.loadtxt(
+            file_info[0], delimiter=delim, usecols=[int(file_info[1])],
+            skiprows=0 if len(file_info) < 3 else int(file_info[2])
+        )
 
 
 def round_half_up(n):
@@ -138,21 +152,6 @@ def round_half_up(n):
         return fl
     else:
         return fl+1
-
-
-def load_array_from_file(file_info_str):
-    """Load an array from a file.
-
-    Stored as 'filename:column:skiprows'.
-    """
-    # TODO:
-    #   make filename behave relative to .hip file unless an absolute string
-    file_info = file_info_str.split(':')
-    delim = ',' if os.path.splitext(file_info[0])[1] == '.csv' else None
-    return numpy.loadtxt(
-        file_info[0], delimiter=delim, usecols=[int(file_info[1])],
-        skiprows=0 if len(file_info) < 3 else int(file_info[2])
-    )
 
 
 def subplots(fig, nrows, ncols, nsubs, share):
