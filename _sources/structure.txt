@@ -352,3 +352,51 @@ very useful if your file has header rows. The number of rows to skip does not
 need to be specified and defaults to 0.
 
 .. _numpy.loadtxt: http://docs.scipy.org/doc/numpy/reference/generated/numpy.loadtxt.html
+
+-------------------
+Omitting Structures
+-------------------
+
+You don't have to specify the graph in every file you write, since all
+attributes (with the exception of ``plots``) in a graph are optional you can
+omit them entirely. This mean you can turn the following:
+
+.. code-block:: yaml
+
+   plots:
+       title: "Some title"
+       labels:
+           x: "x axis"
+           y: "y axis"
+       axes: ...
+
+into this:
+
+.. code-block:: yaml
+
+   title: "Some title"
+   label:
+       x: "x axis"
+       y: "y axis"
+   axes: ...
+
+Further still, all attributes of a plot are optional as well so you can omit
+this too. So the following:
+
+.. code-block:: yaml
+
+   plots:
+       axes:
+           legend: "Legendary legend entry"
+           x: 0, 1, 2, 3, 4
+           y: 0, 2, 4, 6, 8
+
+becomes:
+
+.. code-block:: yaml
+
+   legend: "Legendary legend entry"
+   x: 0, 1, 2, 3, 4
+   y: 0, 2, 4, 6, 8
+
+See `examples`_ for more in-depth examples.

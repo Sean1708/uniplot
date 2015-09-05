@@ -368,6 +368,44 @@ very useful if your file has header rows. The number of rows to skip does not
 need to be specified and defaults to 0.</p>
 </div>
 </div>
+<div class="section" id="omitting-structures">
+<h2>Omitting Structures<a class="headerlink" href="#omitting-structures" title="Permalink to this headline">¶</a></h2>
+<p>You don&#8217;t have to specify the graph in every file you write, since all
+attributes (with the exception of <code class="docutils literal"><span class="pre">plots</span></code>) in a graph are optional you can
+omit them entirely. This mean you can turn the following:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">plots</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">title</span><span class="p-Indicator">:</span> <span class="s">&quot;Some</span><span class="nv"> </span><span class="s">title&quot;</span>
+    <span class="l-Scalar-Plain">labels</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">x</span><span class="p-Indicator">:</span> <span class="s">&quot;x</span><span class="nv"> </span><span class="s">axis&quot;</span>
+        <span class="l-Scalar-Plain">y</span><span class="p-Indicator">:</span> <span class="s">&quot;y</span><span class="nv"> </span><span class="s">axis&quot;</span>
+    <span class="l-Scalar-Plain">axes</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>into this:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">title</span><span class="p-Indicator">:</span> <span class="s">&quot;Some</span><span class="nv"> </span><span class="s">title&quot;</span>
+<span class="l-Scalar-Plain">label</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">x</span><span class="p-Indicator">:</span> <span class="s">&quot;x</span><span class="nv"> </span><span class="s">axis&quot;</span>
+    <span class="l-Scalar-Plain">y</span><span class="p-Indicator">:</span> <span class="s">&quot;y</span><span class="nv"> </span><span class="s">axis&quot;</span>
+<span class="l-Scalar-Plain">axes</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>Further still, all attributes of a plot are optional as well so you can omit
+this too. So the following:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">plots</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">axes</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">legend</span><span class="p-Indicator">:</span> <span class="s">&quot;Legendary</span><span class="nv"> </span><span class="s">legend</span><span class="nv"> </span><span class="s">entry&quot;</span>
+        <span class="l-Scalar-Plain">x</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0, 1, 2, 3, 4</span>
+        <span class="l-Scalar-Plain">y</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0, 2, 4, 6, 8</span>
+</pre></div>
+</div>
+<p>becomes:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">legend</span><span class="p-Indicator">:</span> <span class="s">&quot;Legendary</span><span class="nv"> </span><span class="s">legend</span><span class="nv"> </span><span class="s">entry&quot;</span>
+<span class="l-Scalar-Plain">x</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0, 1, 2, 3, 4</span>
+<span class="l-Scalar-Plain">y</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0, 2, 4, 6, 8</span>
+</pre></div>
+</div>
+<p>See <a href="#id3"><span class="problematic" id="id4">`examples`_</span></a> for more in-depth examples.</p>
+</div>
 </div>
 
 
@@ -385,6 +423,7 @@ need to be specified and defaults to 0.</p>
 <li><a class="reference internal" href="#storing-data-in-a-file">Storing Data in a File</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#omitting-structures">Omitting Structures</a></li>
 </ul>
 </li>
 </ul>
