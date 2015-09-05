@@ -126,7 +126,7 @@ The following attributes are allowed (``title`` and ``labels`` are optional).
    labels:
        x: "The x-axis"
        y: "The y-axis"
-   axes: "Testing!"
+   axes: ...
 
 .. code-block:: json
    :caption: A plot example in JSON
