@@ -55,7 +55,11 @@ class Plot:
         """Extract plot attributes."""
         self.title = data.get('title', '')
         self.labels = data.get('labels', {'x': 'x', 'y': 'y'})
-        axes = data['axes']
+
+        if 'axes' in data:
+            axes = data['axes']
+        else:  # top-level object is an (list of) axes(es)
+            axes = data
 
         if isinstance(axes, _LIST):
             self.axes = [Axes(a) for a in axes]
