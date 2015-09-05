@@ -4,6 +4,7 @@ import os.path
 import argparse
 from . import parse, plot
 from .__about__ import __version__
+from matplotlib import pyplot
 
 
 def arg_setup():
@@ -56,4 +57,9 @@ def main():
     if output_file is None:
         output_file = name + '.pdf'
 
-    plot.plot(plot_data, output_file)
+    fig = pyplot.figure()
+    plot.plot_with_style(plot_data, fig)
+
+    # TODO: this is ok for mulit plots but horrible for single
+    #fig.set_figwidth(plot.plotwidth(fig, nrows, ncols))
+    fig.savefig(output_file)

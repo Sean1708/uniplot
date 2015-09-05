@@ -29,11 +29,23 @@ class Graph:
             self.share = False
             self.style = None
 
-
         if isinstance(plots, _LIST):
             self.plots = [Plot(p) for p in plots]
         else:
             self.plots = [Plot(plots)]
+
+    def plot(self, canvas):
+        """Set attributes for the entire graph."""
+        nsubs = len(self.plots)
+        # as close an approximation to square as possible without empty rows
+        nrows = round_half_up(math.sqrt(nsubs))
+        ncols = math.ceil(nsubs/nrows)
+
+        # TODO: should this be a method?
+        mpl_axes = subplots(canvas, nrows, ncols, nsubs, self.share)
+
+        for (mpl_axis, subplot) in zip(mpl_axes, self.plots):
+            subplot.plot(mpl_axis)
 
 
 class Plot:
@@ -51,6 +63,20 @@ class Plot:
         else:
             self.axes = [Axes(axes)]
 
+    def plot(self, canvas):
+        """Set the attributes for each plot within the graph."""
+        canvas.set_title(self.title)
+
+        canvas.set_xlabel(self.labels['x'])
+        canvas.set_ylabel(self.labels['y'])
+
+        for axis in self.axes:
+            axis.plot(canvas)
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            canvas.legend(loc='best')
+
 
 class Axes:
 
@@ -59,8 +85,20 @@ class Axes:
     def __init__(self, data):
         """Extract axes attributes and data."""
         self.label = data.get('legend', '')
+        # TODO: this is horrible, should just be a method.
         get_axis_values(data, 'x', self.__dict__)
         get_axis_values(data, 'y', self.__dict__)
+
+    def plot(self, canvas):
+        """Plot data onto the axis."""
+        # attributes of Axes corresponds to the function arguments
+        args = vars(self)
+
+        if 'xerr' in args or 'yerr' in args:
+            canvas.errorbar(fmt='o', **args)
+        else:
+            # plot doesn't support plot(x=..., y=...)
+            canvas.plot(args.pop('x'), args.pop('y'), **args)
 
 
 def round_half_up(n):
@@ -149,71 +187,23 @@ def plotwidth(figure, nrows, ncols):
     return height * ncols
 
 
-def plot_axis(canvas, data):
-    """Correctly plot a set of x-y values."""
-    # TODO: when this is refactored we can call vars() on the Axes object to
-    # get the args.
-    args = vars(data)
-
-    if 'xerr' in args or 'yerr' in args:
-        canvas.errorbar(fmt='o', **args)
-    else:
-        # plot doesn't support plot(x=..., y=...)
-        canvas.plot(args.pop('x'), args.pop('y'), **args)
-
-
-def plot_subplot(canvas, data):
-    """Plot each subplot."""
-    canvas.set_title(data.title)
-
-    canvas.set_xlabel(data.labels['x'])
-    canvas.set_ylabel(data.labels['y'])
-
-    for axis in data.axes:
-        plot_axis(canvas, axis)
-
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        canvas.legend(loc='best')
-
-
-def plot_graph(data, filename):
-    """Plot the data."""
-    fig = pyplot.figure()
-    fig.suptitle(data.title)
-
-    nsubs = len(data.plots)
-    # as close an approximation to square as possible without empty rows
-    nrows = round_half_up(math.sqrt(nsubs))
-    ncols = math.ceil(nsubs/nrows)
-
-    axes = subplots(fig, nrows, ncols, nsubs, data.share)
-
-    for (axis, plot) in zip(axes, data.plots):
-        plot_subplot(axis, plot)
-
-    # TODO: this is ok for mulit plots but horrible for single
-    #fig.set_figwidth(plotwidth(fig, nrows, ncols))
-    fig.savefig(filename)
-
-
-def plot(data, filename):
+# TODO: maybe use style as a property?
+# TODO: maybe use as context manager to avoid the if statements
+def plot_with_style(data, canvas):
     """Set the correct style then plot the data."""
     style_dir = os.path.join(os.path.expanduser('~'), '.uniplot', 'style')
     user_styles = os.listdir(style_dir)
 
-    # TODO: just put data.style everywhere
-    stylesheet = data.style
-
     # TODO: use plugin for styles (store them as dict then use rc=...)
-    if stylesheet in user_styles:
-        with matplotlib.rc_context(fname=os.path.join(style_dir, stylesheet)):
-            plot_graph(data, filename)
-    elif stylesheet in pyplot.style.available:
-        with pyplot.style.context(stylesheet):
-            plot_graph(data, filename)
+    # TODO: have a way to use default regardless of data.style
+    if data.style in user_styles:
+        with matplotlib.rc_context(fname=os.path.join(style_dir, data.style)):
+            data.plot(canvas)
+    elif data.style in pyplot.style.available:
+        with pyplot.style.context(data.style):
+            data.plot(canvas)
     else:
-        if stylesheet is not None:
-            m = "style '{}' not found, using default.".format(stylesheet)
+        if data.style is not None:
+            m = "style '{}' not found, using default.".format(data.style)
             warnings.warn(m)
-        plot_graph(data, filename)
+        data.plot(canvas)
