@@ -400,3 +400,5 @@ becomes:
    y: 0, 2, 4, 6, 8
 
 See `examples`_ for more in-depth examples.
+
+.. _examples: https://github.com/Sean1708/uniplot/tree/master/examples
